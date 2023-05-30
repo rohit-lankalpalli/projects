@@ -1,0 +1,19 @@
+
+.matRowColor{
+    background:linear-gradient(to right, var(--color-primary),   var(--color-primary-dark));
+}
+.matRowTextColor{
+    color: var(--font-color)
+}
+
+mat-row:hover > mat-cell.datatableRowHover  {
+    border-bottom: 1px solid currentColor;
+    border-top: 1px solid currentColor;
+    cursor: pointer;
+   // border-color: currentColor;
+}
+
+.additional-column-selection {
+    opacity: 0.75;
+    font-size: 0.75em;
+  }

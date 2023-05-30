@@ -1,0 +1,63 @@
+<div fxFlexFill>
+    <div class="alignRightDiv">
+        <mat-form-field>
+            <mat-icon inline="true" matPrefix>search</mat-icon>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Search">
+        </mat-form-field>&nbsp;
+        <mat-form-field *ngIf="columnList && columnList.length > 0">
+            <mat-label>Columns</mat-label>
+            <mat-select [formControl]="selectedColumns" multiple (selectionChange)="columnSelectionChange($event)">
+                <mat-select-trigger *ngIf="selectedColumns">
+                    {{columnList ? columnList[0].name : ''}}
+                    <span *ngIf="selectedColumns?.value?.length > 1" class="additional-column-selection">
+                        (+{{selectedColumns?.value?.length - 1}}
+                        {{selectedColumns?.value?.length === 2 ? 'other' : 'others'}})
+                    </span>
+                </mat-select-trigger>
+                <mat-option *ngFor="let element of columnList" [value]="element.property" [disabled]="element.disabled">
+                    {{element.name}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div fxFlexFill class="mat-elevation-z8">
+        <mat-table fxFlexFill [dataSource]="dataSource" matSort>
+
+            <ng-container *ngFor="let column of columnList" matColumnDef="{{column.property}}">
+                <mat-header-cell *matHeaderCellDef mat-sort-header class="matRowTextColor">{{column.name}}
+                </mat-header-cell>
+                <mat-cell [class.datatableRowHover]="addRowHoverClass" *matCellDef="let element"
+                    (click)="rowClickedFn(element)">
+                    <span *ngIf="!column.decode">
+                        {{element[column.property]}}
+                    </span>
+                    <span *ngIf="column.decode && column.decodeValues">
+                        <span *ngFor="let decodeElement of column.decodeValues">
+                            <span *ngIf="decodeElement[column.property] == element[column.property]">{{decodeElement.value ? decodeElement.value : ''}}</span>
+                        </span>
+                    </span>
+
+                </mat-cell>
+            </ng-container>
+
+            <ng-container *ngIf="enableOptions" matColumnDef="options">
+                <mat-header-cell *matHeaderCellDef mat-sort-header class="matRowTextColor">Options</mat-header-cell>
+                <mat-cell [class.datatableRowHover]="addRowHoverClass" *matCellDef="let element">
+                    <mat-icon inline="true" style="cursor: pointer" matTooltip="Edit" (click)="editClickedFn(element)">
+                        border_color</mat-icon>&nbsp;&nbsp;
+                    <mat-icon inline="true" style="cursor: pointer" matTooltip="Delete"
+                        (click)="deleteClickedFn(element)">delete</mat-icon>
+                    <!-- <a href="javascript:void(0)" >Edit</a>&nbsp;/
+                    <a href="javascript:void(0)" >Delete</a> -->
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row class="matRowColor" mat-header-row *matHeaderRowDef="displayedColums"></mat-header-row>
+            <mat-row style="wordBreak: break-word;whiteSpace: normal;" *matRowDef="let row;columns: displayedColums;">
+            </mat-row>
+        </mat-table>
+
+        <mat-paginator length="recordCount" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+        </mat-paginator>
+    </div>
+</div>
